@@ -3,9 +3,9 @@ from wabot.parser import Msg
 
 
 def test_MsgDataset():
-    from wabot.data import MsgDataset
+    from wabot.data import SenderDataset
     msgs = [Msg(datetime(2020, 1, i+1), 'sender', ['שלום', 'עולם']) for i in range(10)]
-    ds = MsgDataset(msgs)
+    ds = SenderDataset(msgs)
 
     assert len(ds) == 10
     assert ds[0] == msgs[0]

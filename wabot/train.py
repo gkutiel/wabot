@@ -4,8 +4,8 @@ import json
 from pytorch_lightning import Trainer, seed_everything
 from wabot.MsgEncoder import MsgEncoder
 from wabot.SimpleSenderPredictor import SimpleSenderPredictor
-from wabot.data import msg_data_loader
-from wabot.parser import get_senders
+from wabot.data import Data, msg_data_loader
+from wabot.parser import get_senders, tokenize
 from wabot.parser import get_messages
 
 
@@ -13,26 +13,35 @@ def train_simple_predictor():
     seed_everything(42)
 
     msgs = get_messages()
-    msgs = [m for m in msgs if len(m.text) > 340]
+    tokens = set()
+    for msg in msgs:
+        tokens.update(tokenize(msg.text))
 
-    with open('train.json', 'w') as f:
-        for m in msgs:
-            json.dump(m.to_dict(), f)
-            print(file=f)
+    print(msgs)
+    # msgs = [m for m in msgs if len(m.text) > 340]
 
-    senders = get_senders(msgs)
-    print(f'Senders: {senders}')
+    # with open('train.json', 'w') as f:
+    #     for m in msgs:
+    #         json.dump(m.to_dict(), f)
+    #         print(file=f)
 
-    model = fasttext.load_model('model.bin')
-    msg_encoder = MsgEncoder(model, hidden_size=16)
+    # senders = get_senders(msgs)
+    # print(f'Senders: {senders}')
 
-    predictor = SimpleSenderPredictor(
-        senders=senders,
-        msg_encoder=msg_encoder)
+    # model = fasttext.load_model('model.bin')
+    # msg_encoder = MsgEncoder(model, hidden_size=16)
 
-    trainer = Trainer(
-        log_every_n_steps=1,
-        accumulate_grad_batches=1,
-        max_epochs=10)
+    # predictor = SimpleSenderPredictor(
+    #     senders=senders,
+    #     msg_encoder=msg_encoder)
 
-    trainer.fit(predictor, msg_data_loader(msgs, shuffle=True))
+    # trainer = Trainer(
+    #     log_every_n_steps=1,
+    #     accumulate_grad_batches=1,
+    #     max_epochs=10)
+
+    # trainer.fit(predictor, msg_data_loader(msgs, shuffle=True))
+
+
+if __name__ == '__main__':
+    train_simple_predictor()

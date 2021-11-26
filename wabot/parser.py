@@ -8,24 +8,23 @@ from collections import Counter
 datetime_msg_re = re.compile(r'^(\d{1,2}/\d{1,2}/\d{2}, \d{1,2}:\d{1,2}) - ([^:]{1,20}): (.*)$')
 
 
-def tokens(
-        text: str,
-        sub=re.compile(r'[^אבגדהוזחטיכךלמםנןסעפףצץקרשת]+'),
-        split=re.compile(r'\s+')):
-
-    return [t for t in split.split(sub.sub(' ', text)) if t]
-
-
-def lexicon(tokens: List[str], size=1000):
-    words, _ = zip(*Counter(tokens).most_common(size))
-    return dict((w, i) for i, w in enumerate(words))
-
-
-@dataclass
+@dataclass(frozen=True)
 class Msg:
     time: datetime
     sender: str
     text: str
+
+
+class Tokenizer:
+    def __init__(
+            self,
+            sub=re.compile(r'[^אבגדהוזחטיכךלמםנןסעפףצץקרשת]+'),
+            split=re.compile(r'\s+')):
+        self.sub = sub
+        self.split = split
+
+    def __call__(self, text):
+        return [t for t in self.split.split(self.sub.sub(' ', text)) if t]
 
 
 def parse_msg(line: str):
@@ -48,7 +47,15 @@ def parse(lines: Iterable[str]):
 
 
 def get_senders(msgs: Iterable[Msg]):
-    return sorted(list(set(msg.sender for msg in msgs)))
+    return dict((u, i) for i, u in enumerate(set(msg.sender for msg in msgs)))
+
+
+def get_tokens(msgs: Iterable[Msg], tokenizer=Tokenizer()):
+    tokens = set()
+    for msg in msgs:
+        tokens.update(tokenizer(msg.text))
+
+    return tokens
 
 
 def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):
@@ -61,6 +68,11 @@ def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):
             session = [msg]
 
     yield session
+
+
+def lexicon(tokens: List[str], size=1000):
+    words, _ = zip(*Counter(tokens).most_common(size))
+    return dict((w, i) for i, w in enumerate(words))
 
 
 def get_messages(chat_txt='chat.txt'):

@@ -1,9 +1,15 @@
 import pytest
 import re
 
+from fasttext.FastText import tokenize
 from pytest import fixture
 from datetime import datetime
-from wabot.parser import Msg, get_senders, tokens
+from wabot.parser import Msg, get_senders, Tokenizer
+
+
+@fixture()
+def tokenizer():
+    return Tokenizer(sub=re.compile(' '))
 
 
 def text(date='01/01/18', time='00:00', sender='Bob', text='Hello World'):
@@ -14,8 +20,8 @@ def msg(datetime=datetime(2018, 1, 1, 0, 0), sender='Bob', text='Hello World'):
     return Msg(datetime, sender, text)
 
 
-def test_tokens():
-    assert tokens('Hello World', sub=re.compile(' ')) == ['Hello', 'World']
+def test_Tokenizer(tokenizer):
+    assert tokenizer('Hello World') == ['Hello', 'World']
 
 
 def test_lexicon():
@@ -68,8 +74,18 @@ def test_parse():
 
 
 def test_get_senders():
-    assert get_senders([msg(), msg(), msg()]) == ['Bob']
-    assert get_senders([msg(sender='A'), msg(sender='C'), msg(sender='B')]) == ['A', 'B', 'C']
+    assert get_senders([msg(), msg(), msg()]) == {'Bob': 0}
+
+    senders = get_senders([msg(sender='A'), msg(sender='C'), msg(sender='B')])
+    assert senders.keys() == {'A', 'B', 'C'}
+    assert set(senders.values()) == {0, 1, 2}
+
+
+def test_get_tokens(tokenizer):
+    from wabot.parser import get_tokens
+
+    msgs = [msg(text='a b'), msg(text='a c d')]
+    assert get_tokens(msgs, tokenizer=tokenizer) == {'a', 'b', 'c', 'd'}
 
 
 def test_to_sessions():
