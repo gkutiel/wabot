@@ -21,5 +21,9 @@ def train_simple_predictor():
         senders=senders,
         msg_encoder=msg_encoder)
 
-    trainer = Trainer()
+    trainer = Trainer(
+        log_every_n_steps=1,
+        accumulate_grad_batches=100,
+        max_epochs=2)
+
     trainer.fit(predictor, msg_data_loader(msgs))

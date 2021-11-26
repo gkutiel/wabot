@@ -1,5 +1,8 @@
-from typing import List
+import torch
 import pytorch_lightning as pl
+
+from typing import List
+
 from torch import nn
 from torch import Tensor
 
@@ -23,7 +26,15 @@ class SimpleSenderPredictor(pl.LightningModule):
 
         return self.sm(logits)
 
-    def training_step(self, sample, batch_idx):
-        sender, text = sample
+    def training_step(self, msgs: List[Msg], batch_idx):
+        assert len(msgs) == 1
+        msg = msgs[0]
 
-        return self.loss(self(text), self.senders.index(sender))
+        pred = self(msg.text)
+        target = torch.tensor(self.senders.index(msg.sender))
+        loss = self.loss(pred[None, ...], target[None, ...])
+        self.log('train_loss', loss)
+        return loss
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=0.001)

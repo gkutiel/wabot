@@ -16,4 +16,4 @@ def test_SimpleSenderPredictor():
 
     pred = predictor('בוקר טוב')
     assert pred.shape == (3,)
-    assert pred.sum() == 1
+    assert pred.sum().item() == 1

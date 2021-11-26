@@ -22,4 +22,5 @@ def msg_data_loader(msgs: Iterable[Msg]) -> DataLoader:
     return DataLoader(
         MsgDataset(msgs),
         batch_size=1,
-        shuffle=False)
+        shuffle=False,
+        collate_fn=lambda x: x)
