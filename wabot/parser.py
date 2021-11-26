@@ -17,7 +17,7 @@ class Msg:
 
 class Tokenizer:
     def __init__(
-            self,
+            self, *,
             sub=re.compile(r'[^אבגדהוזחטיכךלמםנןסעפףצץקרשת]+'),
             split=re.compile(r'\s+')):
         self.sub = sub
@@ -25,6 +25,24 @@ class Tokenizer:
 
     def __call__(self, text):
         return [t for t in self.split.split(self.sub.sub(' ', text)) if t]
+
+
+def get_messages(chat_txt='chat.txt'):
+    lines = open(chat_txt).readlines()
+    return list(parse(lines))
+
+
+def get_tokens(msgs: Iterable[Msg], tokenizer=Tokenizer()):
+    tokens = set()
+    for msg in msgs:
+        tokens.update(tokenizer(msg.text))
+
+    return tokens
+
+
+def build_lexicon(tokens: Iterable[str], size=1000):
+    words, _ = zip(*Counter(tokens).most_common(size))
+    return dict((w, i) for i, w in enumerate(words))
 
 
 def parse_msg(line: str):
@@ -50,14 +68,6 @@ def get_senders(msgs: Iterable[Msg]):
     return dict((u, i) for i, u in enumerate(set(msg.sender for msg in msgs)))
 
 
-def get_tokens(msgs: Iterable[Msg], tokenizer=Tokenizer()):
-    tokens = set()
-    for msg in msgs:
-        tokens.update(tokenizer(msg.text))
-
-    return tokens
-
-
 def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):
     session = []
     for msg in msgs:
@@ -68,13 +78,3 @@ def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):
             session = [msg]
 
     yield session
-
-
-def lexicon(tokens: List[str], size=1000):
-    words, _ = zip(*Counter(tokens).most_common(size))
-    return dict((w, i) for i, w in enumerate(words))
-
-
-def get_messages(chat_txt='chat.txt'):
-    lines = open(chat_txt).readlines()
-    return list(parse(lines))

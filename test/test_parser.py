@@ -1,7 +1,6 @@
 import pytest
 import re
 
-from fasttext.FastText import tokenize
 from pytest import fixture
 from datetime import datetime
 from wabot.parser import Msg, get_senders, Tokenizer
@@ -24,10 +23,10 @@ def test_Tokenizer(tokenizer):
     assert tokenizer('Hello World') == ['Hello', 'World']
 
 
-def test_lexicon():
-    from wabot.parser import lexicon
+def test_build_lexicon():
+    from wabot.parser import build_lexicon
 
-    assert lexicon(['a', 'a', 'b', 'c', 'c'], size=2) == {'a': 0, 'c': 1}
+    assert build_lexicon(['a', 'a', 'b', 'c', 'c'], size=2) == {'a': 0, 'c': 1}
 
 
 def test_date_time_msg_re():

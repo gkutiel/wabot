@@ -1,19 +1,20 @@
-import fasttext
+import re
 
 from datetime import datetime
-from wabot.MsgEncoder import MsgEncoder
-from wabot.parser import Msg
+from wabot.TextEncoder import TextEncoder
+from wabot.parser import Msg, Tokenizer
 
 
 def test_SimpleSenderPredictor():
     from wabot.SimpleSenderPredictor import SimpleSenderPredictor
-    model = fasttext.load_model('model.bin')
-    msg_encoder = MsgEncoder(model, hidden_size=16)
+    text_encoder = TextEncoder(
+        tokenizer=Tokenizer(sub=re.compile(r' ')),
+        lexicon={'a': 0, 'b': 1, 'c': 2})
 
     predictor = SimpleSenderPredictor(
-        senders=['a', 'b', 'c'],
-        msg_encoder=msg_encoder)
+        num_senders=3,
+        text_encoder=text_encoder)
 
-    pred = predictor('בוקר טוב')
+    pred = predictor('a b c')
     assert pred.shape == (3,)
     assert 0.99 <= pred.sum().item() <= 1.01
