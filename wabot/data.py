@@ -8,19 +8,17 @@ from wabot.TextEncoder import TextEncoder
 from wabot.parser import Msg
 from torch.nn.utils.rnn import pad_sequence
 
+from wabot.train import Params
+
 
 def sender_dataloader(
         *, msgs: Iterable[Msg],
         senders: Dict[str, int],
         text_encoder: TextEncoder,
-        min_tokens=5,
-        batch_size=1024,
-        shuffle=False) -> DataLoader:
+        params: Params) -> DataLoader:
 
     data = [(senders[msg.sender], text_encoder.tokenize(msg.text)) for msg in msgs]
-    data = [(sid, tokens) for sid, tokens in data if len(tokens) >= min_tokens]
-
-    print(f'Len data {len(data)}')
+    data = [(sid, tokens) for sid, tokens in data if len(tokens) >= params.min_tokens]
 
     sids, tokens = zip(*data)
 
@@ -33,5 +31,4 @@ def sender_dataloader(
 
     return DataLoader(
         TensorDataset(sids, tokens),
-        batch_size=batch_size,
-        shuffle=shuffle)
+        batch_size=params.batch_size)

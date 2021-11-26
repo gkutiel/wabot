@@ -7,6 +7,7 @@ from typing import Dict, List, Tuple
 
 from torch import nn
 from torch import Tensor
+from wabot.Params import Params
 
 from wabot.parser import Tokenizer
 from wabot.TextEncoder import TextEncoder
@@ -15,11 +16,15 @@ from wabot.TextEncoder import TextEncoder
 class SimpleSenderPredictor(pl.LightningModule):
     def __init__(
             self, *,
+            params: Params,
             text_encoder: TextEncoder,
             num_senders: int) -> None:
 
         super().__init__()
 
+        self.save_hyperparameters()
+
+        self.lr = params.lr
         self.text_encoder = text_encoder
 
         self.linear = nn.Linear(text_encoder.hidden_size, num_senders)
@@ -41,4 +46,6 @@ class SimpleSenderPredictor(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=0.1)
+        return torch.optim.Adam(
+            self.parameters(),
+            lr=self.lr)

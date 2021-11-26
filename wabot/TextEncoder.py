@@ -2,6 +2,7 @@ import torch
 
 from typing import Dict, List, Union, cast
 from torch import nn, Tensor
+from wabot.Params import Params
 
 from wabot.parser import Tokenizer
 
@@ -9,13 +10,13 @@ from wabot.parser import Tokenizer
 class TextEncoder(nn.Module):
     def __init__(
             self, *,
-            hidden_size: int = 16,
+            params: Params,
             tokenizer: Tokenizer = Tokenizer(),
             lexicon: Dict[str, int]):
 
         super().__init__()
-        print(list(lexicon.items())[:5])
 
+        hidden_size = params.hidden_size
         self.hidden_size = hidden_size
 
         self.tokenizer = tokenizer

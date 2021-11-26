@@ -1,12 +1,13 @@
 import re
-from datetime import datetime
 
-from wabot.parser import Msg, Tokenizer
+from wabot.parser import Tokenizer
+from wabot.train import Params
 
 
 def test_MsgEncoder():
     from wabot.TextEncoder import TextEncoder
     encoder = TextEncoder(
+        params=Params(),
         lexicon={'a': 0, 'b': 1, 'c': 2},
         tokenizer=Tokenizer(sub=re.compile(r' ')))
 

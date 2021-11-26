@@ -2,6 +2,7 @@ from datetime import datetime
 import re
 from wabot.TextEncoder import TextEncoder
 from wabot.parser import Msg, Tokenizer
+from wabot.train import Params
 
 
 def test_sender_dataloader():
@@ -11,11 +12,13 @@ def test_sender_dataloader():
     msgs = [Msg(datetime(2020, 1, i+1), 'a', 'Hello My World') for i in range(10)]
     tokenizer = Tokenizer(sub=re.compile(r' '))
 
+    params = Params(batch_size=2, min_tokens=2)
     dl = sender_dataloader(
+        params=params,
         msgs=msgs,
         senders=senders,
-        batch_size=2,
         text_encoder=TextEncoder(
+            params=params,
             tokenizer=tokenizer,
             lexicon={'Hello': 0, 'My': 1, 'World': 2}))
 

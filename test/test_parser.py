@@ -84,7 +84,7 @@ def test_get_tokens(tokenizer):
     from wabot.parser import get_tokens
 
     msgs = [msg(text='a b'), msg(text='a c d')]
-    assert get_tokens(msgs, tokenizer=tokenizer) == {'a', 'b', 'c', 'd'}
+    assert get_tokens(msgs, tokenizer=tokenizer) == ['a', 'b', 'c', 'd']
 
 
 def test_to_sessions():

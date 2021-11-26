@@ -12,6 +12,7 @@ torch = "^1.10.0"
 pytorch-lightning = "^1.5.3"
 tensorboard = "^2.7.0"
 torchmetrics = "^0.6.0"
+optuna = "^2.10.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -27,4 +28,5 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.scripts]
-bot-train-simple-predictor = "wabot.main:train_simple_predictor"
+bot-train = "wabot.main:train"
+bot-train-hp = "wabot.main:train_hp"
