@@ -3,3 +3,8 @@ __pycache__
 
 *.txt
 *.lock
+*.bin
+*.json
+*.orig
+
+.DS_Store
