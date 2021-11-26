@@ -11,6 +11,7 @@ tqdm = "^4.62.3"
 torch = "^1.10.0"
 pytorch-lightning = "^1.5.3"
 tensorboard = "^2.7.0"
+torchmetrics = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

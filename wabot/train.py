@@ -11,7 +11,9 @@ def train_simple_predictor():
 
     msgs = get_messages()
 
-    text_encoder = TextEncoder(lexicon=build_lexicon(get_tokens(msgs), size=10000))
+    text_encoder = TextEncoder(
+        hidden_size=32,
+        lexicon=build_lexicon(get_tokens(msgs)))
 
     senders = get_senders(msgs)
 

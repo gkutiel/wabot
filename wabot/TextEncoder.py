@@ -12,14 +12,16 @@ class TextEncoder(nn.Module):
             hidden_size: int = 16,
             tokenizer: Tokenizer = Tokenizer(),
             lexicon: Dict[str, int]):
+
         super().__init__()
+        print(list(lexicon.items())[:5])
 
         self.hidden_size = hidden_size
 
         self.tokenizer = tokenizer
         self.lexicon = lexicon
         self.embedding = nn.Embedding(
-            num_embeddings=len(lexicon)+1,
+            num_embeddings=len(lexicon) + 1,
             embedding_dim=hidden_size)
 
         self.gru = nn.GRU(
@@ -37,7 +39,7 @@ class TextEncoder(nn.Module):
         else:
             tokens = input
 
-        embedding = self.embedding(torch.tensor(tokens, dtype=torch.int))
+        embedding = self.embedding(tokens)
 
         if embedding.dim() < 3:
             embedding = embedding[None, ...]

@@ -37,10 +37,10 @@ def get_tokens(msgs: Iterable[Msg], tokenizer=Tokenizer()):
     for msg in msgs:
         tokens.update(tokenizer(msg.text))
 
-    return tokens
+    return sorted(tokens)
 
 
-def build_lexicon(tokens: Iterable[str], size=10_000) -> Dict[str, int]:
+def build_lexicon(tokens: List[str], size=10_000) -> Dict[str, int]:
     words, _ = zip(*Counter(tokens).most_common(size))
     words = cast(List[str], words)
     return dict((w, i+1) for i, w in enumerate(words))
@@ -66,7 +66,7 @@ def parse(lines: Iterable[str]):
 
 
 def get_senders(msgs: Iterable[Msg]):
-    return dict((u, i) for i, u in enumerate(set(msg.sender for msg in msgs)))
+    return dict((u, i) for i, u in enumerate(sorted(set(msg.sender for msg in msgs))))
 
 
 def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):

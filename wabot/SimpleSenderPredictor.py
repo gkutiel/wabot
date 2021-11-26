@@ -1,4 +1,6 @@
 import torch
+import torchmetrics
+
 import pytorch_lightning as pl
 
 from typing import Dict, List, Tuple
@@ -31,12 +33,12 @@ class SimpleSenderPredictor(pl.LightningModule):
         return self.softmax(logits)
 
     def training_step(self, batch: List[Tensor], batch_idx):
-        assert len(batch) == 2
         sid, tokens = batch
         pred = self(tokens)
         loss = self.loss(pred, sid)
-        self.log('train_loss', loss)
+        self.log('train/loss', loss)
+        self.log('train/acc', torchmetrics.functional.accuracy(pred, sid))
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=0.002)
+        return torch.optim.Adam(self.parameters(), lr=0.1)
