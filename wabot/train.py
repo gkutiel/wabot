@@ -23,7 +23,7 @@ def train_simple_predictor():
 
     trainer = Trainer(
         log_every_n_steps=1,
-        accumulate_grad_batches=100,
-        max_epochs=2)
+        accumulate_grad_batches=512,
+        max_epochs=3)
 
     trainer.fit(predictor, msg_data_loader(msgs))
