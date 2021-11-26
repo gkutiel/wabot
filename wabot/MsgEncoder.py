@@ -7,7 +7,7 @@ from wabot.parser import Msg
 
 
 class MsgEncoder(nn.Module):
-    def __init__(self, model: FastText._FastText, hidden_size: int = 32):
+    def __init__(self, model: FastText._FastText, hidden_size: int):
         super().__init__()
         self.hidden_size = hidden_size
         self.model = model
@@ -22,6 +22,8 @@ class MsgEncoder(nn.Module):
         input = [torch.tensor(t, dtype=torch.float) for t in input]
         input = torch.stack(input)
         input = input[None, ...]
+
+        assert input.shape == (1, len(words), self.model.get_dimension()), input.shape
 
         if h0 is None:
             h0 = torch.zeros(1, 1, self.hidden_size)

@@ -30,11 +30,11 @@ class SimpleSenderPredictor(pl.LightningModule):
         assert len(msgs) == 1
         msg = msgs[0]
 
-        pred = self(msg.text)
+        pred = self(msg.sender + ':' + msg.text)
         target = torch.tensor(self.senders.index(msg.sender))
         loss = self.loss(pred[None, ...], target[None, ...])
         self.log('train_loss', loss)
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=0.005)
+        return torch.optim.Adam(self.parameters(), lr=0.002)

@@ -8,7 +8,7 @@ from wabot.parser import Msg
 def test_SimpleSenderPredictor():
     from wabot.SimpleSenderPredictor import SimpleSenderPredictor
     model = fasttext.load_model('model.bin')
-    msg_encoder = MsgEncoder(model)
+    msg_encoder = MsgEncoder(model, hidden_size=16)
 
     predictor = SimpleSenderPredictor(
         senders=['a', 'b', 'c'],
@@ -16,4 +16,4 @@ def test_SimpleSenderPredictor():
 
     pred = predictor('בוקר טוב')
     assert pred.shape == (3,)
-    assert pred.sum().item() == 1
+    assert 0.99 <= pred.sum().item() <= 1.01

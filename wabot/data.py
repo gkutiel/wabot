@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader
 from datetime import timedelta
-from typing import Iterable
+from typing import Iterable, List
 
 from torch.utils.data.dataset import Dataset
 
@@ -18,9 +18,9 @@ class MsgDataset(Dataset):
         return self.msgs[i]
 
 
-def msg_data_loader(msgs: Iterable[Msg]) -> DataLoader:
+def msg_data_loader(msgs: Iterable[Msg], shuffle=False) -> DataLoader:
     return DataLoader(
         MsgDataset(msgs),
         batch_size=1,
-        shuffle=False,
+        shuffle=shuffle,
         collate_fn=lambda x: x)
