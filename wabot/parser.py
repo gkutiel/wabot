@@ -2,7 +2,7 @@ import re
 
 from datetime import datetime, timedelta
 from dataclasses import dataclass
-from typing import Iterable, List
+from typing import Dict, Iterable, List, cast
 from collections import Counter
 
 datetime_msg_re = re.compile(r'^(\d{1,2}/\d{1,2}/\d{2}, \d{1,2}:\d{1,2}) - ([^:]{1,20}): (.*)$')
@@ -40,9 +40,10 @@ def get_tokens(msgs: Iterable[Msg], tokenizer=Tokenizer()):
     return tokens
 
 
-def build_lexicon(tokens: Iterable[str], size=1000):
+def build_lexicon(tokens: Iterable[str], size=10_000) -> Dict[str, int]:
     words, _ = zip(*Counter(tokens).most_common(size))
-    return dict((w, i) for i, w in enumerate(words))
+    words = cast(List[str], words)
+    return dict((w, i+1) for i, w in enumerate(words))
 
 
 def parse_msg(line: str):

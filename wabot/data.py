@@ -1,34 +1,34 @@
-from dataclasses import dataclass
+import torch
 from torch.utils.data import DataLoader
-from datetime import timedelta
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable
 
-from torch.utils.data.dataset import Dataset
+from torch.utils.data.dataset import TensorDataset
+from wabot.TextEncoder import TextEncoder
 
-from wabot.parser import Msg, Tokenizer
-
-
-@dataclass(frozen=True)
-class Data:
-    sender_id: int
-    text: str
+from wabot.parser import Msg
+from torch.nn.utils.rnn import pad_sequence
 
 
-class SenderDataset(Dataset):
-    def __init__(self, data: List[Data]):
-        self.data = data
+def sender_dataloader(
+        *, msgs: Iterable[Msg],
+        senders: Dict[str, int],
+        text_encoder: TextEncoder,
+        min_tokens=3,
+        batch_size=256,
+        shuffle=False) -> DataLoader:
 
-    def __len__(self):
-        return len(self.data)
+    data = [(senders[msg.sender], text_encoder.tokenize(msg.text)) for msg in msgs]
+    data = [(sid, tokens) for sid, tokens in data if len(tokens) >= min_tokens]
+    sids, tokens = zip(*data)
 
-    def __getitem__(self, i):
-        return self.data[i]
+    sids = torch.tensor(sids)
 
+    tokens = pad_sequence(
+        [torch.tensor(t) for t in tokens],
+        batch_first=True,
+        padding_value=0)
 
-def msg_data_loader(msgs: Iterable[Msg], senders: Dict[str, int], shuffle=False) -> DataLoader:
-    data = [Data(senders[msg.sender], msg.text) for msg in msgs]
     return DataLoader(
-        SenderDataset(data),
-        batch_size=1,
-        shuffle=shuffle,
-        collate_fn=lambda x: x)
+        TensorDataset(sids, tokens),
+        batch_size=batch_size,
+        shuffle=shuffle)

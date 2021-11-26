@@ -26,7 +26,7 @@ def test_Tokenizer(tokenizer):
 def test_build_lexicon():
     from wabot.parser import build_lexicon
 
-    assert build_lexicon(['a', 'a', 'b', 'c', 'c'], size=2) == {'a': 0, 'c': 1}
+    assert build_lexicon(['a', 'a', 'b', 'c', 'c'], size=2) == {'a': 1, 'c': 2}
 
 
 def test_date_time_msg_re():

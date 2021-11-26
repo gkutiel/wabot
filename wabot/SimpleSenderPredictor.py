@@ -1,11 +1,10 @@
 import torch
 import pytorch_lightning as pl
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from torch import nn
 from torch import Tensor
-from wabot.data import Data
 
 from wabot.parser import Tokenizer
 from wabot.TextEncoder import TextEncoder
@@ -25,19 +24,17 @@ class SimpleSenderPredictor(pl.LightningModule):
         self.softmax = nn.Softmax(dim=0)
         self.loss = nn.CrossEntropyLoss()
 
-    def forward(self, text: str) -> Tensor:
-        encoded = self.text_encoder(text)
+    def forward(self, tokens: List[int]) -> Tensor:
+        encoded = self.text_encoder(tokens)
         logits = self.linear(encoded)
 
-        return self.softmax(logits).squeeze()
+        return self.softmax(logits)
 
-    def training_step(self, batch: List[Data], batch_idx):
-        assert len(batch) == 1
-
-        d = batch[0]
-        pred = self(d.text)
-        target = torch.tensor(d.sender_id)
-        loss = self.loss(pred[None, ...], target[None, ...])
+    def training_step(self, batch: List[Tensor], batch_idx):
+        assert len(batch) == 2
+        sid, tokens = batch
+        pred = self(tokens)
+        loss = self.loss(pred, sid)
         self.log('train_loss', loss)
         return loss
 
