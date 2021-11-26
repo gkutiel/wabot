@@ -10,7 +10,7 @@ from wabot.parser import build_lexicon, get_messages, get_senders, get_tokens
 from wabot.SimpleSenderPredictor import SimpleSenderPredictor
 from wabot.TextEncoder import TextEncoder
 
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 
 def train(params: Params):
@@ -30,13 +30,24 @@ def train(params: Params):
         senders=senders,
         text_encoder=text_encoder)
 
-    checkpoint_callback = ModelCheckpoint(save_weights_only=True)
+    monitor = 'train/acc'
+
+    checkpoint_callback = ModelCheckpoint(
+        monitor=monitor,
+        mode='max',
+        save_weights_only=True)
+
+    early_stopping = EarlyStopping(
+        monitor=monitor,
+        mode='max',
+        min_delta=1e-6,
+        patience=5)
 
     trainer = Trainer(
-        callbacks=[checkpoint_callback],
+        callbacks=[checkpoint_callback, early_stopping],
         log_every_n_steps=1,
         accumulate_grad_batches=1,
-        max_epochs=50)
+        max_epochs=30)
 
     model = SimpleSenderPredictor(
         params=params,
@@ -50,9 +61,9 @@ def train(params: Params):
 
 def objective(trial):
     return train(params=Params(
-        hidden_size=trial.suggest_int('hidden_size', 16, 128, step=2),
-        batch_size=trial.suggest_int('batch_size', 32, 1024, step=32),
-        lr=trial.suggest_float('lr', 0.01, 0.1, step=0.01)))
+        hidden_size=trial.suggest_int('hidden_size', 16, 32, step=2),
+        # batch_size=trial.suggest_int('batch_size', 128, 1024, step=128),
+        lr=trial.suggest_float('lr', 0.001, 0.1, step=0.001)))
 
 
 def train_hp():
