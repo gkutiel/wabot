@@ -69,11 +69,19 @@ def msg(h=0, m=0, s='Bob', t='Hi'):
 def test_get_senders():
     assert get_senders([msg(), msg(), msg()]) == ['Bob']
     assert get_senders([msg(s='A'), msg(s='C'), msg(s='B')]) == ['A', 'B', 'C']
+<<<<<<< HEAD
+
+
+def test_to_sessions():
+    from wabot.parser import to_sessions
+
+=======
 
 
 def test_to_sessions():
     from wabot.parser import get_sessions
 
+>>>>>>> f
     msgs = [msg(0, 0), msg(0, 1), msg(0, 2), msg(0, 3), msg(0, 4), msg(0, 5)]
     assert len(list(get_sessions(msgs))) == 1
 

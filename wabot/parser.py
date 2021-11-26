@@ -40,10 +40,20 @@ def parse(lines: Iterable[str]):
 
 
 def get_senders(msgs: Iterable[Msg]):
+<<<<<<< HEAD
+    senders = set()
+    for msg in msgs:
+        senders.add(msg.sender)
+    return sorted(list(senders))
+
+
+def to_sessions(msgs: Iterable[Msg], max_gap_minutes=10):
+=======
     return sorted(list(set(msg.sender for msg in msgs)))
 
 
 def get_sessions(msgs: Iterable[Msg], max_gap_minutes=10):
+>>>>>>> f
     max_td = timedelta(minutes=max_gap_minutes)
     session = []
     for msg in msgs:
