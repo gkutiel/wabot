@@ -34,9 +34,11 @@ class TextEncoder(nn.Module):
         tokens = self.tokenizer(text)
         return [self.lexicon[t] for t in tokens if t in self.lexicon]
 
-    def forward(self, input: Union[str, Tensor]) -> Tensor:
+    def forward(self, input: Union[str, List[int], Tensor]) -> Tensor:
         if isinstance(input, str):
-            tokens = torch.tensor(self.tokenize(input))
+            tokens = torch.tensor(self.tokenize(input), dtype=torch.int)
+        elif isinstance(input, list):
+            tokens = torch.tensor(input, dtype=torch.int)
         else:
             tokens = input
 

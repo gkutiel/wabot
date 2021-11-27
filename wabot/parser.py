@@ -1,4 +1,5 @@
 import re
+import json
 
 from datetime import datetime, timedelta
 from dataclasses import dataclass
@@ -42,10 +43,24 @@ def get_tokens(msgs: Iterable[Msg], tokenizer=Tokenizer()):
     return sorted(tokens)
 
 
-def build_lexicon(tokens: List[str], params: Params) -> Dict[str, int]:
+def build_lexicon(tokens: List[str], params: Params, save=False) -> Dict[str, int]:
     words, _ = zip(*Counter(tokens).most_common(params.lexicon_size))
     words = cast(List[str], words)
-    return dict((w, i+1) for i, w in enumerate(words))
+    lexicon = dict((w, i+1) for i, w in enumerate(words))
+
+    if save:
+        json.dump(lexicon, open('lexicon.json', 'w'))
+
+    return lexicon
+
+
+def get_senders(msgs: Iterable[Msg], save=False):
+    senders = dict((u, i) for i, u in enumerate(sorted(set(msg.sender for msg in msgs))))
+
+    if save:
+        json.dump(senders, open('senders.json', 'w'))
+
+    return senders
 
 
 def parse_msg(line: str):
@@ -65,10 +80,6 @@ def parse(lines: Iterable[str]):
             yield parse_msg(line)
         except ValueError as e:
             pass
-
-
-def get_senders(msgs: Iterable[Msg]):
-    return dict((u, i) for i, u in enumerate(sorted(set(msg.sender for msg in msgs))))
 
 
 def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):

@@ -3,6 +3,7 @@ import re
 
 from pytest import fixture
 from datetime import datetime
+from wabot.Params import Params
 from wabot.parser import Msg, get_senders, Tokenizer
 
 
@@ -26,7 +27,9 @@ def test_Tokenizer(tokenizer):
 def test_build_lexicon():
     from wabot.parser import build_lexicon
 
-    assert build_lexicon(['a', 'a', 'b', 'c', 'c'], size=2) == {'a': 1, 'c': 2}
+    assert build_lexicon(
+        ['a', 'a', 'b', 'c', 'c'],
+        params=Params(lexicon_size=2)) == {'a': 1, 'c': 2}
 
 
 def test_date_time_msg_re():

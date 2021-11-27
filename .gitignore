@@ -7,5 +7,6 @@ __pycache__
 *.bin
 *.json
 *.orig
+*.ckpt
 
 .DS_Store

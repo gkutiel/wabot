@@ -23,9 +23,12 @@ def train(params: Params = Params(), callbacks=[]):
 
     text_encoder = TextEncoder(
         params=params,
-        lexicon=build_lexicon(get_tokens(msgs), params=params))
+        lexicon=build_lexicon(
+            get_tokens(msgs),
+            params=params,
+            save=True))
 
-    senders = get_senders(msgs)
+    senders = get_senders(msgs, save=True)
 
     dl = sender_dataloader(
         params=params,

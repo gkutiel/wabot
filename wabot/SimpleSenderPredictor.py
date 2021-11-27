@@ -3,7 +3,7 @@ import torchmetrics
 
 import pytorch_lightning as pl
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 from torch import nn
 from torch import Tensor
@@ -31,7 +31,7 @@ class SimpleSenderPredictor(pl.LightningModule):
         self.softmax = nn.Softmax(dim=0)
         self.loss = nn.CrossEntropyLoss()
 
-    def forward(self, tokens: List[int]) -> Tensor:
+    def forward(self, tokens: Union[str, Tensor]) -> Tensor:
         encoded = self.text_encoder(tokens)
         logits = self.linear(encoded)
 
