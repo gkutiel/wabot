@@ -18,7 +18,13 @@ def sender_dataloader(
         params: Params) -> DataLoader:
 
     data = [(senders[msg.sender], text_encoder.tokenize(msg.text)) for msg in msgs]
-    data = [(sid, tokens) for sid, tokens in data if len(tokens) >= params.min_tokens]
+    data = [
+        (sid, tokens)
+        for sid, tokens
+        in data
+        if params.min_tokens <= len(tokens) <= params.max_tokens]
+
+    print(f"{len(data)} messages in the dataset")
 
     sids, tokens = zip(*data)
 

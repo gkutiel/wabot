@@ -13,7 +13,10 @@ from wabot.TextEncoder import TextEncoder
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 
-def train(params: Params):
+monitor = 'train/acc'
+
+
+def train(params: Params = Params(), callbacks=[]):
     seed_everything(42)
 
     msgs = get_messages()
@@ -30,24 +33,16 @@ def train(params: Params):
         senders=senders,
         text_encoder=text_encoder)
 
-    monitor = 'train/acc'
-
     checkpoint_callback = ModelCheckpoint(
         monitor=monitor,
         mode='max',
         save_weights_only=True)
 
-    early_stopping = EarlyStopping(
-        monitor=monitor,
-        mode='max',
-        min_delta=1e-6,
-        patience=5)
-
     trainer = Trainer(
-        callbacks=[checkpoint_callback, early_stopping],
+        callbacks=[checkpoint_callback] + callbacks,
         log_every_n_steps=1,
         accumulate_grad_batches=1,
-        max_epochs=30)
+        max_epochs=600)
 
     model = SimpleSenderPredictor(
         params=params,
@@ -60,14 +55,19 @@ def train(params: Params):
 
 
 def objective(trial):
-    return train(params=Params(
+    early_stopping = EarlyStopping(
+        monitor=monitor,
+        mode='max',
+        patience=20)
+
+    return train(callbacks=[early_stopping], params=Params(
         hidden_size=trial.suggest_int('hidden_size', 16, 32, step=2),
         # batch_size=trial.suggest_int('batch_size', 128, 1024, step=128),
-        lr=trial.suggest_float('lr', 0.001, 0.1, step=0.001)))
+        lr=trial.suggest_float('lr', 0.05, 0.5, step=0.05)))
 
 
 def train_hp():
     sampler = TPESampler(seed=8979)
     study = optuna.create_study(sampler=sampler)
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=30)
+    study.optimize(objective, n_trials=20)
