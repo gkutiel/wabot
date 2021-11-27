@@ -10,3 +10,8 @@ def train():
 def train_hp():
     from wabot.train import train_hp as main
     Fire(main)
+
+
+def quiz():
+    from wabot.quiz import quiz as main
+    Fire(main)

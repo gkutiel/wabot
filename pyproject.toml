@@ -30,3 +30,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 bot-train = "wabot.main:train"
 bot-train-hp = "wabot.main:train_hp"
+bot-quiz = "wabot.main:quiz"

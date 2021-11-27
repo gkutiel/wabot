@@ -7,5 +7,5 @@ class Params:
     batch_size: int = 5_000
     lr: float = 0.1
     min_tokens: int = 10
-    max_tokens: int = 20
+    max_tokens: int = 25
     lexicon_size: int = 10_000
