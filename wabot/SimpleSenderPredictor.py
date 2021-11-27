@@ -31,7 +31,7 @@ class SimpleSenderPredictor(pl.LightningModule):
         self.softmax = nn.Softmax(dim=0)
         self.loss = nn.CrossEntropyLoss()
 
-    def forward(self, tokens: Union[str, Tensor]) -> Tensor:
+    def forward(self, tokens: Union[str, List[int], Tensor]) -> Tensor:
         encoded = self.text_encoder(tokens)
         logits = self.linear(encoded)
 
@@ -49,3 +49,8 @@ class SimpleSenderPredictor(pl.LightningModule):
         return torch.optim.Adam(
             self.parameters(),
             lr=self.lr)
+
+    def predict(self, text: Union[str, List[int]]):
+        with torch.no_grad():
+            self.eval()
+            return self(text)

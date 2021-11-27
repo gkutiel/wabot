@@ -14,16 +14,14 @@ def predict():
     senders = json.load(open('senders.json'))
     senders = {v: k for k, v in senders.items()}
 
-    with torch.no_grad():
-        model.eval()
-        with open('predictions.txt', 'w') as f:
-            for msg in msgs:
-                tokens = model.text_encoder.tokenize(msg.text)
-                if 10 <= len(tokens) <= 20:
-                    pred = model(tokens)
-                    v, i = pred.max(0)
-                    if v > .9:
-                        print(msg.text, senders[i.item()], msg.sender, file=f)
+    with open('predictions.txt', 'w') as f:
+        for msg in msgs:
+            tokens = model.text_encoder.tokenize(msg.text)
+            if 10 <= len(tokens) <= 20:
+                pred = model(tokens)
+                v, i = pred.max(0)
+                if v > .9:
+                    print(msg.text, senders[i.item()], msg.sender, file=f)
 
 
 if __name__ == '__main__':
