@@ -18,7 +18,7 @@ class SimpleSenderPredictor(pl.LightningModule):
             self, *,
             params: Params,
             text_encoder: TextEncoder,
-            num_senders: int) -> None:
+            senders: List[str]) -> None:
 
         super().__init__()
 
@@ -26,8 +26,9 @@ class SimpleSenderPredictor(pl.LightningModule):
 
         self.lr = params.lr
         self.text_encoder = text_encoder
+        self.senders = senders
 
-        self.linear = nn.Linear(text_encoder.hidden_size, num_senders)
+        self.linear = nn.Linear(text_encoder.hidden_size, len(senders))
         self.softmax = nn.Softmax(dim=0)
         self.loss = nn.CrossEntropyLoss()
 
@@ -53,4 +54,4 @@ class SimpleSenderPredictor(pl.LightningModule):
     def predict(self, text: Union[str, List[int]]):
         with torch.no_grad():
             self.eval()
-            return self(text)
+            return zip(self(text), self.senders)

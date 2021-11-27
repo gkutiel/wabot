@@ -8,7 +8,7 @@ from wabot.train import Params
 def test_sender_dataloader():
     from wabot.data import sender_dataloader
 
-    senders = {'a': 0, 'b': 1, 'c': 2}
+    senders = ['a', 'b', 'c']
     msgs = [Msg(datetime(2020, 1, i+1), 'a', 'Hello My World') for i in range(10)]
     tokenizer = Tokenizer(sub=re.compile(r' '))
 

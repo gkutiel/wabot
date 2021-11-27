@@ -50,7 +50,7 @@ def train(params: Params = Params(), callbacks=[]):
     model = SimpleSenderPredictor(
         params=params,
         text_encoder=text_encoder,
-        num_senders=len(senders))
+        senders=senders)
 
     trainer.fit(model, dl)
 

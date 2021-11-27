@@ -14,7 +14,7 @@ def predict():
     senders = json.load(open('senders.json'))
     senders = {v: k for k, v in senders.items()}
 
-    with open('predictions.txt', 'w') as f:
+    with open('predictions.txt', 'w', encoding='utf-8') as f:
         for msg in msgs:
             tokens = model.text_encoder.tokenize(msg.text)
             if 10 <= len(tokens) <= 20:

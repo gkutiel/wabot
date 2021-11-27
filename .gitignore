@@ -8,5 +8,6 @@ __pycache__
 *.json
 *.orig
 *.ckpt
+*.bu
 
 .DS_Store

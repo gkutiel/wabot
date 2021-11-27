@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from typing import Dict, Iterable
+from typing import Dict, Iterable, List
 
 from torch.utils.data.dataset import TensorDataset
 from wabot.TextEncoder import TextEncoder
@@ -13,11 +13,11 @@ from wabot.train import Params
 
 def sender_dataloader(
         *, msgs: Iterable[Msg],
-        senders: Dict[str, int],
+        senders: List[str],
         text_encoder: TextEncoder,
         params: Params) -> DataLoader:
 
-    data = [(senders[msg.sender], text_encoder.tokenize(msg.text)) for msg in msgs]
+    data = [(senders.index(msg.sender), text_encoder.tokenize(msg.text)) for msg in msgs]
     data = [
         (sid, tokens)
         for sid, tokens

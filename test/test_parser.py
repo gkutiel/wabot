@@ -76,11 +76,10 @@ def test_parse():
 
 
 def test_get_senders():
-    assert get_senders([msg(), msg(), msg()]) == {'Bob': 0}
+    assert get_senders([msg(), msg(), msg()]) == ['Bob']
 
     senders = get_senders([msg(sender='A'), msg(sender='C'), msg(sender='B')])
-    assert senders.keys() == {'A', 'B', 'C'}
-    assert set(senders.values()) == {0, 1, 2}
+    assert senders == ['A', 'B', 'C']
 
 
 def test_get_tokens(tokenizer):

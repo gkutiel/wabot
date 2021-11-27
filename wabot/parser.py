@@ -17,6 +17,9 @@ class Msg:
     sender: str
     text: str
 
+    def __str__(self):
+        return f'{self.time} - {self.sender}: {self.text}'
+
 
 class Tokenizer:
     def __init__(
@@ -49,16 +52,16 @@ def build_lexicon(tokens: List[str], params: Params, save=False) -> Dict[str, in
     lexicon = dict((w, i+1) for i, w in enumerate(words))
 
     if save:
-        json.dump(lexicon, open('lexicon.json', 'w'))
+        json.dump(lexicon, open('lexicon.json', 'w', encoding='utf-8'))
 
     return lexicon
 
 
 def get_senders(msgs: Iterable[Msg], save=False):
-    senders = dict((u, i) for i, u in enumerate(sorted(set(msg.sender for msg in msgs))))
+    senders = sorted(set(msg.sender for msg in msgs))
 
     if save:
-        json.dump(senders, open('senders.json', 'w'))
+        json.dump(senders, open('senders.json', 'w', encoding='utf-8'))
 
     return senders
 

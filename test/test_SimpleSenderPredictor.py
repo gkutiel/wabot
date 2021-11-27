@@ -15,7 +15,7 @@ def test_SimpleSenderPredictor():
 
     predictor = SimpleSenderPredictor(
         params=Params(),
-        num_senders=3,
+        senders=['1', '2', '3'],
         text_encoder=text_encoder)
 
     pred = predictor('a b c')
