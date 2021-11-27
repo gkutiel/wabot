@@ -2,7 +2,7 @@ import pytest
 import re
 
 from pytest import fixture
-from datetime import datetime
+from datetime import datetime, timedelta
 from wabot.Params import Params
 from wabot.parser import Msg, get_senders, Tokenizer
 
@@ -96,10 +96,11 @@ def test_to_sessions():
         return datetime(2018, 1, 1, 0, m)
 
     msgs = [msg(datetime=dt(i)) for i in range(5)]
-    assert len(list(get_sessions(msgs))) == 1
+    max_gap = timedelta(minutes=10)
+    assert len(list(get_sessions(msgs, max_gap=max_gap))) == 1
 
     msgs = [msg(datetime=dt(i)) for i in range(1, 20, 6)] + [msg(datetime=dt(i)) for i in range(31, 50, 7)]
-    sessions = list(get_sessions(msgs))
+    sessions = list(get_sessions(msgs, max_gap=max_gap))
     assert len(sessions) == 2
     assert len(sessions[0]) == 4
     assert len(sessions[1]) == 3

@@ -8,4 +8,4 @@ class Params:
     lr: float = 0.1
     min_tokens: int = 10
     max_tokens: int = 20
-    lexicon_size: int = 15_000
+    lexicon_size: int = 10_000

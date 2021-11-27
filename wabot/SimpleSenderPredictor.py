@@ -54,4 +54,4 @@ class SimpleSenderPredictor(pl.LightningModule):
     def predict(self, text: Union[str, List[int]]):
         with torch.no_grad():
             self.eval()
-            return zip(self(text), self.senders)
+            return zip(self(text).tolist(), self.senders)

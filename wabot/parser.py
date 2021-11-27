@@ -91,7 +91,7 @@ def parse(lines: Iterable[str]):
             pass
 
 
-def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=10)):
+def get_sessions(msgs: Iterable[Msg], max_gap=timedelta(minutes=2)):
     session = []
     for msg in msgs:
         if not session or (msg.time - session[-1].time) < max_gap:
