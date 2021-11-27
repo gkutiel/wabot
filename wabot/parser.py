@@ -52,7 +52,10 @@ def build_lexicon(tokens: List[str], params: Params, save=False) -> Dict[str, in
     lexicon = dict((w, i+1) for i, w in enumerate(words))
 
     if save:
-        json.dump(lexicon, open('lexicon.json', 'w', encoding='utf-8'))
+        json.dump(
+            lexicon,
+            open('lexicon.json', 'w', encoding='utf-8'),
+            ensure_ascii=False)
 
     return lexicon
 
@@ -61,7 +64,10 @@ def get_senders(msgs: Iterable[Msg], save=False):
     senders = sorted(set(msg.sender for msg in msgs))
 
     if save:
-        json.dump(senders, open('senders.json', 'w', encoding='utf-8'))
+        json.dump(
+            senders,
+            open('senders.json', 'w', encoding='utf-8'),
+            ensure_ascii=False)
 
     return senders
 
