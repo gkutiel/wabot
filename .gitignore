@@ -11,3 +11,6 @@ __pycache__
 *.bu
 
 .DS_Store
+
+!docs/chats/*.json
+!docs/msgs/*.json
