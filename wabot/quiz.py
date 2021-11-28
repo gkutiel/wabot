@@ -41,7 +41,7 @@ def make_questions(msgs, params=Params()):
                     'chat': [msg.to_dict() for msg in window(msgs, pos)]}
 
 
-def quiz(index_html='docs/shentzer/index.html', num_questions=20):
+def quiz(index_html='docs/shentzer/index.html', num_questions=10):
     questions = list(make_questions(get_messages()))
     random.shuffle(questions)
     questions = questions[:num_questions]
@@ -296,7 +296,7 @@ def quiz(index_html='docs/shentzer/index.html', num_questions=20):
             }
 
             this.nextButton.disabled = false;
-            this.scoreDiv.innerText = `${(this.score / this.qid * 100).toFixed(0)}%`;
+            this.scoreDiv.innerText = `${this.qid}/${this.quiz.length}`;
         }
 
         next = () => {
