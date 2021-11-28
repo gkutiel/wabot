@@ -41,11 +41,11 @@ def make_questions(msgs, params=Params()):
                     'chat': [msg.to_dict() for msg in window(msgs, pos)]}
 
 
-def quiz(index_html='docs/shentzer/index.html', num_questions=10):
+def quiz(folder, num_questions=10):
     questions = list(make_questions(get_messages()))
     random.shuffle(questions)
     questions = questions[:num_questions]
-    with open(index_html, 'w') as f:
+    with open(f'docs/{folder}/index.html', 'w') as f:
         f.write(r'''
 <!DOCTYPE html>
 <html>
