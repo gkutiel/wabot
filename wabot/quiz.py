@@ -159,7 +159,7 @@ def quiz(index_html='docs/shentzer/index.html', num_questions=20):
     <meta property="og:image" content="favicon.png">
 
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/png" href="https://gkutiel.github.io/wabot/favicon.png" />
 
 
 </head>
