@@ -89,6 +89,10 @@ def quiz(folder, num_questions=10):
         cursor: pointer;
     }
 
+    .answer:hover {
+        background-color: #eee;
+    }
+
     input[type=radio] {
         cursor: pointer;
     }
