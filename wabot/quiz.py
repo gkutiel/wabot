@@ -156,7 +156,7 @@ def quiz(index_html='docs/shentzer/index.html', num_questions=20):
     <meta property="og:url" content="">
     <meta property="og:description" content="מי אמר למי?.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="favicon.png">
+    <meta property="og:image" content="https://gkutiel.github.io/wabot/favicon.png">
 
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="icon" type="image/png" href="https://gkutiel.github.io/wabot/favicon.png" />
