@@ -92,7 +92,7 @@ def quiz(folder, num_questions=10):
     .answer:hover {
         background-color: #eee;
     }
-
+2
     input[type=radio] {
         cursor: pointer;
     }
