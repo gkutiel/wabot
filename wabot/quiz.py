@@ -25,8 +25,11 @@ def window(
         and not '<Media omitted>' in msg.text]
 
 
-def make_questions(msgs, params=Params()):
-    model = SimpleSenderPredictor.load_from_checkpoint('model.ckpt')
+def make_questions(
+        msgs, *,
+        model_ckpt,
+        params=Params()):
+    model = SimpleSenderPredictor.load_from_checkpoint(model_ckpt)
     for pos, msg in tqdm(enumerate(msgs)):
         tokens = model.text_encoder.tokenize(msg.text)
         if params.min_tokens <= len(tokens) <= params.max_tokens:
@@ -42,7 +45,7 @@ def make_questions(msgs, params=Params()):
 
 
 def quiz(folder, model_ckpt, chat_txt, num_questions=10):
-    questions = list(make_questions(get_messages()))
+    questions = list(make_questions(get_messages(chat_txt), model_ckpt=model_ckpt))
     random.shuffle(questions)
     questions = questions[:num_questions]
     with open(f'docs/{folder}/index.html', 'w') as f:
