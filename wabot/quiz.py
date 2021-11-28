@@ -41,7 +41,7 @@ def make_questions(msgs, params=Params()):
                     'chat': [msg.to_dict() for msg in window(msgs, pos)]}
 
 
-def quiz(folder, num_questions=10):
+def quiz(folder, model_ckpt, chat_txt, num_questions=10):
     questions = list(make_questions(get_messages()))
     random.shuffle(questions)
     questions = questions[:num_questions]
