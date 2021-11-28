@@ -3,7 +3,7 @@ import torchmetrics
 
 import pytorch_lightning as pl
 
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, cast
 
 from torch import nn
 from torch import Tensor
@@ -51,7 +51,9 @@ class SimpleSenderPredictor(pl.LightningModule):
             self.parameters(),
             lr=self.lr)
 
-    def predict(self, text: Union[str, List[int]]):
+    def predict(self, text: Union[str, List[int]]) -> List[Tuple[float, str]]:
         with torch.no_grad():
             self.eval()
-            return zip(self(text).tolist(), self.senders)
+            pred = self(text).tolist()
+            pred = cast(List[float], pred)
+            return list(zip(pred, self.senders))

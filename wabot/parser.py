@@ -17,7 +17,7 @@ class Msg:
     sender: str
     text: str
 
-    def dict(self):
+    def to_dict(self):
         return {'time': self.time.strftime('%d/%m/%Y, %H:%M'), 'sender': self.sender, 'text': self.text}
 
     def __str__(self):

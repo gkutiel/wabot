@@ -19,47 +19,33 @@ def window(
     time = msgs[pos].time
 
     return [
-        msg.dict()
+        msg
         for msg
         in msgs[pos-max_size:pos+max_size]
         if max(msg.time, time) - min(msg.time, time) < delta
         and not '<Media omitted>' in msg.text]
 
 
-def quiz():
-    params = Params()
+def make_questions(msgs, params=Params()):
     model = SimpleSenderPredictor.load_from_checkpoint('model.ckpt')
-    msgs = get_messages()
+    for pos, msg in tqdm(enumerate(msgs)):
+        tokens = model.text_encoder.tokenize(msg.text)
+        if params.min_tokens <= len(tokens) <= params.max_tokens:
+            pred = sorted(model.predict(tokens))
+            pred = pred[-3:]
+            _, senders = zip(*pred)
+            if msg.sender in senders:
+                yield {
+                    'text': msg.text,
+                    'sender': msg.sender,
+                    'senders': senders,
+                    'chat': [msg.to_dict() for msg in window(msgs, pos)]}
 
-    with open('quiz.txt', 'w', encoding='utf-8') as f:
-        for mid, msg in tqdm(enumerate(msgs)):
-            tokens = model.text_encoder.tokenize(msg.text)
-            if params.min_tokens <= len(tokens) <= params.max_tokens:
-                pred = sorted(model.predict(tokens))
-                pred = pred[-3:]
-                _, senders = zip(*pred)
 
-                if msg.sender in senders:
-                    with open(f'docs/msgs/{mid}.json', 'w') as j:
-                        d = msg.dict()
-                        d['senders'] = senders
-                        json.dump(d, j)
-
-                    with open(f'docs/chats/{mid}.json', 'w') as j:
-                        json.dump(window(msgs, mid), j)
-
-                    print('=' * 80, file=f)
-                    print(mid, file=f)
-                    print('מי אמר/ה?', file=f)
-                    print(file=f)
-                    print(f'*{msg.text}*', file=f)
-                    print(file=f)
-
-                    for i, sender in enumerate(senders):
-                        print(f'{i+1}. {sender}', file=f)
-
-                    print(file=f)
-                    print(msg.sender, file=f)
+def quiz():
+    questions = list(make_questions(get_messages()))
+    with open('docs/quiz.json', 'w') as f:
+        json.dump(questions[:2], f, ensure_ascii=False)
 
 
 if __name__ == '__main__':
